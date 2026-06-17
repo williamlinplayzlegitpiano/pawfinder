@@ -23,6 +23,12 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -40,6 +46,7 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -70,6 +77,7 @@ data class Pet(
     val distance: String,
     val urgency: String,
     val daysLeft: Int,
+    val description: String,
     val imageRes: Int
 )
 
@@ -81,6 +89,7 @@ val samplePets = listOf(
         distance = "2.4 km",
         urgency = "Critical",
         daysLeft = 2,
+        description = "Gentle, playful, and looking for a calm home.",
         imageRes = R.drawable.dog_alvin
     ),
     Pet(
@@ -90,6 +99,7 @@ val samplePets = listOf(
         distance = "8.8 km",
         urgency = "High",
         daysLeft = 4,
+        description = "Quiet and friendly, loves snacks and soft spaces.",
         imageRes = R.drawable.rabbit_william
     ),
     Pet(
@@ -99,6 +109,7 @@ val samplePets = listOf(
         distance = "4.4 km",
         urgency = "Moderate",
         daysLeft = 6,
+        description = "Curious and energetic, needs an experienced foster.",
         imageRes = R.drawable.fox_joshna
     )
 )
@@ -131,7 +142,7 @@ fun PetRescueApp() {
         FloatingBottomNavigationBar(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .padding(horizontal = 24.dp, vertical = 14.dp)
+                .padding(horizontal = 38.dp, vertical = 26.dp)
         )
     }
 }
@@ -152,33 +163,65 @@ fun PawfinderLogo(
 fun DashboardScreen(modifier: Modifier = Modifier) {
     var searchText by remember { mutableStateOf("") }
 
-    Surface(
-        modifier = modifier.fillMaxSize(),
-        color = AppColors.Background
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(AppColors.Background)
+            .verticalScroll(rememberScrollState())
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = 20.dp,
-                    top = 36.dp,
-                    end = 20.dp,
-                    bottom = 20.dp
-                ),
-            verticalArrangement = Arrangement.spacedBy(22.dp)
-        ) {
-            HeaderSection()
+        TopDashboardSection(
+            searchText = searchText,
+            onSearchTextChange = { searchText = it }
+        )
 
-            SearchSection(
-                searchText = searchText,
-                onSearchTextChange = { searchText = it }
+        CommunitySection()
+    }
+}
+
+@Composable
+fun TopDashboardSection(
+    searchText: String,
+    onSearchTextChange: (String) -> Unit
+) {
+    Column(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(AppColors.Background)
+            .padding(start = 24.dp, end = 24.dp, top = 60.dp, bottom = 28.dp)
+    ) {
+        SearchSection(
+            searchText = searchText,
+            onSearchTextChange = onSearchTextChange
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = "Urgent Pets",
+                style = MaterialTheme.typography.headlineLarge,
+                color = AppColors.TextPrimary,
+                modifier = Modifier.weight(1f)
             )
 
-            UrgentPetsSection()
+            Text(
+                text = "See more",
+                style = MaterialTheme.typography.labelLarge,
+                color = AppColors.TextSecondary
+            )
+        }
 
-            DashboardShortcutsSection()
+        Spacer(modifier = Modifier.height(14.dp))
 
-            RecentPostsSection()
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            items(samplePets) { pet ->
+                PetCard(pet = pet)
+            }
         }
     }
 }
@@ -201,37 +244,62 @@ fun HeaderSection() {
 fun SearchSection(
     searchText: String,
     onSearchTextChange: (String) -> Unit
-)  {
-    OutlinedTextField(
-        value = searchText,
-        onValueChange = onSearchTextChange,
-        modifier = Modifier.fillMaxWidth(),
-        placeholder = {
-            Text("Search pets, shelters, breeds...")
-        },
-        leadingIcon = {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search"
-            )
-        },
-        trailingIcon = {
-            IconButton(
-                onClick = {
-                    // behaviour for later
-                }
-            ) {
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(58.dp)
+            .clip(RoundedCornerShape(50.dp))
+            .background(AppColors.SearchBackground)
+            .padding(start = 18.dp, end = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = "⌕",
+            fontSize = 34.sp,
+            color = AppColors.TextSecondary
+        )
+
+        Spacer(modifier = Modifier.width(10.dp))
+
+        Box(
+            modifier = Modifier.weight(1f),
+            contentAlignment = Alignment.CenterStart
+        ) {
+            if (searchText.isEmpty()) {
                 Text(
-                    text = "☰",
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = AppColors.TextPrimary
+                    text = "Search...",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = AppColors.Background
                 )
             }
-        },
-        shape = RoundedCornerShape(18.dp),
-        singleLine = true
-    )
+
+            BasicTextField(
+                value = searchText,
+                onValueChange = onSearchTextChange,
+                singleLine = true,
+                textStyle = MaterialTheme.typography.bodyMedium.copy(
+                    color = AppColors.TextPrimary
+                ),
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
+        Box(
+            modifier = Modifier
+                .height(46.dp)
+                .clip(RoundedCornerShape(22.dp))
+                .background(AppColors.FilterButtonBackground)
+                .padding(horizontal = 16.dp),
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "Filters",
+                style = MaterialTheme.typography.labelLarge,
+                color = AppColors.TextPrimary
+            )
+        }
+    }
 }
 
 @Composable
@@ -258,26 +326,25 @@ fun UrgentPetsSection() {
 @Composable
 fun PetCard(pet: Pet) {
     Card(
-        modifier = Modifier.width(230.dp),
+        modifier = Modifier
+            .width(278.dp)
+            .height(275.dp),
         shape = RoundedCornerShape(24.dp),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.CardBackground
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 4.dp
-        )
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier.padding(14.dp)
+            modifier = Modifier.padding(18.dp)
         ) {
-
             Image(
                 painter = painterResource(id = pet.imageRes),
                 contentDescription = pet.name,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(130.dp)
-                    .clip(RoundedCornerShape(18.dp)),
+                    .clip(RoundedCornerShape(14.dp)),
                 contentScale = ContentScale.Crop
             )
 
@@ -289,8 +356,8 @@ fun PetCard(pet: Pet) {
             ) {
                 Text(
                     text = pet.name,
-                    style = MaterialTheme.typography.titleMedium,
-                    fontWeight = FontWeight.Bold,
+                    style = MaterialTheme.typography.headlineMedium,
+                    color = AppColors.TextPrimary,
                     modifier = Modifier.weight(1f)
                 )
 
@@ -308,18 +375,19 @@ fun PetCard(pet: Pet) {
             Spacer(modifier = Modifier.height(4.dp))
 
             Text(
-                text = "${pet.shelter} • ${pet.distance}",
+                text = pet.description,
                 style = MaterialTheme.typography.bodySmall,
-                color = AppColors.TextPrimary
+                color = AppColors.TextPrimary,
+                maxLines = 2
             )
 
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                text = pet.urgency,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
-                color = AppColors.TextSecondary
+                text = "${pet.shelter} • ${pet.distance}",
+                style = MaterialTheme.typography.bodySmall,
+                color = AppColors.TextPrimary,
+                maxLines = 1
             )
         }
     }
@@ -329,89 +397,263 @@ fun PetCard(pet: Pet) {
 fun UrgencyBadge(daysLeft: Int) {
     Box(
         modifier = Modifier
-            .background(
-                color = AppColors.PetImageBackground,
-                shape = CircleShape
-            )
-            .padding(horizontal = 10.dp, vertical = 5.dp)
+            .clip(RoundedCornerShape(14.dp))
+            .background(AppColors.UrgencyBackground)
+            .padding(horizontal = 10.dp, vertical = 6.dp)
     ) {
         Text(
             text = "${daysLeft}d left",
-            style = MaterialTheme.typography.labelSmall,
-            fontWeight = FontWeight.Bold,
+            style = MaterialTheme.typography.labelMedium,
             color = AppColors.TextPrimary
         )
     }
 }
 
 @Composable
-fun DashboardShortcutsSection() {
-    Column {
-        Text(
-            text = "Dashboard",
-            style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
-        )
+fun CommunitySection(modifier: Modifier = Modifier) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(AppColors.CommunityBackground)
+            .padding(start = 28.dp, end = 28.dp, top = 28.dp, bottom = 130.dp)
+    ) {
+        DashboardShortcutsSection()
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(12.dp)
+            horizontalArrangement = Arrangement.Center,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            ShortcutCard(
-                title = "Forums",
-                emoji = "💬",
-                modifier = Modifier.weight(1f)
+            Image(
+                painter = painterResource(id = R.drawable.paw_icon),
+                contentDescription = "Paw icon",
+                modifier = Modifier.size(24.dp),
+                contentScale = ContentScale.Fit
             )
 
-            ShortcutCard(
-                title = "Saved",
-                emoji = "🔖",
-                modifier = Modifier.weight(1f)
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Text(
+                text = "Community Spotlight",
+                style = MaterialTheme.typography.headlineMedium,
+                color = AppColors.TextOnDark
             )
 
-            ShortcutCard(
-                title = "Resources",
-                emoji = "🤝",
-                modifier = Modifier.weight(1f)
+            Spacer(modifier = Modifier.width(8.dp))
+
+            Image(
+                painter = painterResource(id = R.drawable.paw_icon),
+                contentDescription = "Paw icon",
+                modifier = Modifier.size(24.dp),
+                contentScale = ContentScale.Fit
             )
         }
+
+        Spacer(modifier = Modifier.height(18.dp))
+
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(1.dp)
+                .background(AppColors.Background)
+        )
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        CommunityPostCard()
+    }
+}
+
+@Composable
+fun DashboardShortcutsSection() {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        ShortcutCard(
+            title = "Forums",
+            iconRes = R.drawable.forum_icon
+        )
+
+        ShortcutCard(
+            title = "Saved",
+            iconRes = R.drawable.saved_icon
+        )
+
+        ShortcutCard(
+            title = "Resources",
+            iconRes = R.drawable.resources_icon
+        )
     }
 }
 
 @Composable
 fun ShortcutCard(
     title: String,
-    emoji: String,
-    modifier: Modifier = Modifier
+    iconRes: Int
 ) {
     Card(
-        modifier = modifier,
-        shape = RoundedCornerShape(18.dp),
+        modifier = Modifier
+            .width(104.dp)
+            .height(104.dp),
+        shape = RoundedCornerShape(22.dp),
         colors = CardDefaults.cardColors(
-            containerColor = AppColors.BrightOrange
-        )
+            containerColor = AppColors.CardBackground
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 18.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            modifier = Modifier.fillMaxSize(),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
-            Text(
-                text = emoji,
-                fontSize = 24.sp
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = title,
+                modifier = Modifier.size(40.dp),
+                contentScale = ContentScale.Fit
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
                 text = title,
-                style = MaterialTheme.typography.labelMedium,
-                fontWeight = FontWeight.Bold,
+                style = MaterialTheme.typography.bodyMedium,
                 color = AppColors.TextPrimary
             )
+        }
+    }
+}
+
+@Composable
+fun CommunityPostCard() {
+    Card(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(340.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = AppColors.PostBackground
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(24.dp)
+        ) {
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .size(64.dp)
+                        .clip(CircleShape)
+                        .background(AppColors.CardBackground),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.profile_icon),
+                        contentDescription = "Profile icon",
+                        modifier = Modifier.size(52.dp),
+                        contentScale = ContentScale.Fit
+                    )
+                }
+
+                Spacer(modifier = Modifier.width(14.dp))
+
+                Column(
+                    modifier = Modifier.weight(1f)
+                ) {
+                    Text(
+                        text = "Cathy Bloberg",
+                        style = MaterialTheme.typography.headlineMedium,
+                        color = AppColors.TextPrimary
+                    )
+
+                    Text(
+                        text = "10 hr ago",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = AppColors.TextSecondary
+                    )
+                }
+
+                Text(
+                    text = "•••",
+                    fontSize = 24.sp,
+                    color = Color.Black
+                )
+            }
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp)
+                    .clip(RoundedCornerShape(14.dp))
+                    .background(AppColors.PlaceholderGray)
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Text(
+                text = "OMG I FOUND SOMETHING COOL lets see what it is, beifalkjdha s;od aksdalskdjla od as d... more",
+                style = MaterialTheme.typography.bodyMedium,
+                color = AppColors.TextPrimary
+            )
+
+            Spacer(modifier = Modifier.height(22.dp))
+
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(2.dp)
+                    .background(AppColors.TextSecondary)
+            )
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.saved_icon),
+                    contentDescription = "Save post",
+                    modifier = Modifier.size(26.dp),
+                    contentScale = ContentScale.Fit
+                )
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                Text(
+                    text = "♡ 5",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = AppColors.TextPrimary
+                )
+
+                Spacer(modifier = Modifier.width(24.dp))
+
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Image(
+                        painter = painterResource(id = R.drawable.forum_icon),
+                        contentDescription = "Comments",
+                        modifier = Modifier.size(22.dp),
+                        contentScale = ContentScale.Fit
+                    )
+
+                    Spacer(modifier = Modifier.width(5.dp))
+
+                    Text(
+                        text = "15",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = AppColors.TextPrimary
+                    )
+                }
+            }
         }
     }
 }
@@ -462,40 +704,34 @@ fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
     Card(
         modifier = modifier
             .fillMaxWidth()
-            .height(74.dp),
-        shape = RoundedCornerShape(32.dp),
+            .height(72.dp),
+        shape = RoundedCornerShape(30.dp),
         colors = CardDefaults.cardColors(
-            containerColor = AppColors.CardBackground
+            containerColor = AppColors.NavBackground
         ),
         elevation = CardDefaults.cardElevation(
-            defaultElevation = 8.dp
+            defaultElevation = 12.dp
         )
     ) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 18.dp),
+                .padding(horizontal = 34.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
             FloatingNavItem(
-                label = "Home",
-                icon = "\uD83C\uDFE0\uFE0E",
-                selected = true,
+                iconRes = R.drawable.home_icon,
                 onClick = {}
             )
 
             FloatingNavItem(
-                label = "Marketplace",
-                icon = "🐾",
-                selected = false,
+                iconRes = R.drawable.paw_icon,
                 onClick = {}
             )
 
             FloatingNavItem(
-                label = "Profile",
-                icon = "\uD83D\uDC64",
-                selected = false,
+                iconRes = R.drawable.profile_icon,
                 onClick = {}
             )
         }
@@ -504,40 +740,21 @@ fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun FloatingNavItem(
-    label: String,
-    icon: String,
-    selected: Boolean,
+    iconRes: Int,
     onClick: () -> Unit
 ) {
-    Column(
+    Box(
         modifier = Modifier
-            .width(96.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .size(58.dp)
+            .clip(CircleShape)
+            .clickable { onClick() },
+        contentAlignment = Alignment.Center
     ) {
-        Box(
-            modifier = Modifier
-                .height(32.dp)
-                .width(64.dp)
-                .background(
-                    color = if (selected) AppColors.PrimarySoft else AppColors.CardBackground,
-                    shape = RoundedCornerShape(50.dp)
-                ),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = icon,
-                fontSize = 20.sp,
-                color = AppColors.TextPrimary
-            )
-        }
-
-        Spacer(modifier = Modifier.height(3.dp))
-
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelMedium,
-            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
-            color = AppColors.TextPrimary
+        Image(
+            painter = painterResource(id = iconRes),
+            contentDescription = null,
+            modifier = Modifier.size(38.dp),
+            contentScale = ContentScale.Fit
         )
     }
 }
