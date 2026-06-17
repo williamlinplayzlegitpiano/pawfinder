@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -45,6 +46,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +57,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+
+import kotlinx.coroutines.delay
 
 import com.williamlin.petrescue.ui.theme.AppColors
 import com.williamlin.petrescue.ui.theme.PetRescueTheme
@@ -106,7 +110,8 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             PetRescueTheme {
-                PetRescueApp()
+                //PetRescueApp()
+                PetRescueRoot()
             }
         }
     }
@@ -132,6 +137,18 @@ fun PetRescueApp() {
 }
 
 @Composable
+fun PawfinderLogo(
+    modifier: Modifier = Modifier
+) {
+    Image(
+        painter = painterResource(id = R.drawable.pawfinder_logo),
+        contentDescription = "Pawfinder logo",
+        modifier = modifier,
+        contentScale = ContentScale.Fit
+    )
+}
+
+@Composable
 fun DashboardScreen(modifier: Modifier = Modifier) {
     var searchText by remember { mutableStateOf("") }
 
@@ -142,7 +159,12 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(20.dp),
+                .padding(
+                    start = 20.dp,
+                    top = 36.dp,
+                    end = 20.dp,
+                    bottom = 20.dp
+                ),
             verticalArrangement = Arrangement.spacedBy(22.dp)
         ) {
             HeaderSection()
@@ -164,20 +186,14 @@ fun DashboardScreen(modifier: Modifier = Modifier) {
 @Composable
 fun HeaderSection() {
     Column {
-        Text(
-            text = "HomeBound",
-            style = MaterialTheme.typography.headlineSmall,
-            fontWeight = FontWeight.Bold,
-            color = AppColors.TextPrimary
-        )
+            PawfinderLogo(
+                modifier = Modifier
+                    .width(150.dp)
+                    .height(40.dp)
+            )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(0.2.dp))
 
-        Text(
-            text = "Adopt, foster, or support pets that need help near you",
-            style = MaterialTheme.typography.bodyMedium,
-            color = AppColors.TextSecondary
-        )
     }
 }
 
@@ -523,5 +539,59 @@ fun FloatingNavItem(
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium,
             color = AppColors.TextPrimary
         )
+    }
+}
+
+@Composable
+fun LoadingScreen() {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(AppColors.Background),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            PawfinderLogo(
+                modifier = Modifier
+                    .width(200.dp)
+                    .height(40.dp)
+            )
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            Box(
+                modifier = Modifier
+                    .width(120.dp)
+                    .height(5.dp)
+                    .clip(RoundedCornerShape(50))
+                    .background(AppColors.TextSecondary.copy(alpha = 0.35f))
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .width(72.dp)
+                        .clip(RoundedCornerShape(50))
+                        .background(AppColors.TextSecondary)
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun PetRescueRoot() {
+    var showLoading by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        delay(2000)
+        showLoading = false
+    }
+
+    if (showLoading) {
+        LoadingScreen()
+    } else {
+        PetRescueApp()
     }
 }
