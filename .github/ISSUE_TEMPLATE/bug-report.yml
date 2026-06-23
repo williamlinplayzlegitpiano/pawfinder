@@ -1,0 +1,81 @@
+name: Bug Report
+description: Report something that is not working correctly
+title: "[BUG] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please provide enough information for the bug to be reproduced.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: Clearly explain what went wrong.
+      placeholder: Describe the problem...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: List the steps that cause the problem.
+      placeholder: |
+        1. Open the app
+        2. Go to...
+        3. Tap...
+        4. The error appears
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+      description: What should have happened?
+      placeholder: The app should...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behaviour
+      description: What happened instead?
+      placeholder: The app currently...
+    validations:
+      required: true
+
+  - type: textarea
+    id: testing
+    attributes:
+      label: Testing Information
+      description: Include the device, emulator, Android version, or tests performed.
+      placeholder: |
+        Device or emulator:
+        Android version:
+        App branch:
+    validations:
+      required: true
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots or Error Messages
+      description: Add screenshots, logs, or error messages here.
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - Low
+        - Medium
+        - High
+        - Critical
+    validations:
+      required: true
+
