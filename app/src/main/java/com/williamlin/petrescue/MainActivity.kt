@@ -111,6 +111,26 @@ val samplePets = listOf(
         daysLeft = 6,
         description = "Curious and energetic, needs an experienced foster.",
         imageRes = R.drawable.fox_joshna
+    ),
+    Pet(
+        name = "Luna",
+        breed = "Chihuahua",
+        shelter = "BC SPCA",
+        distance = "10 km",
+        urgency = "Critical",
+        daysLeft = 3,
+        description = "Small, affectionate, and comfortable around people.",
+        imageRes = R.drawable.dog_alvin
+    ),
+    Pet(
+        name = "Milo",
+        breed = "Mixed Breed",
+        shelter = "Burnaby Animal Shelter",
+        distance = "6.2 km",
+        urgency = "High",
+        daysLeft = 5,
+        description = "Friendly, active, and looking for a patient adopter.",
+        imageRes = R.drawable.dog_alvin
     )
 )
 
@@ -133,11 +153,13 @@ fun PetRescueApp() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        DashboardScreen(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(bottom = 88.dp)
-        )
+//        DashboardScreen(
+//            modifier = Modifier
+//                .fillMaxSize()
+//                .padding(bottom = 88.dp)
+//        )
+
+        MarketplaceScreen()
 
         FloatingBottomNavigationBar(
             modifier = Modifier
@@ -243,21 +265,22 @@ fun HeaderSection() {
 @Composable
 fun SearchSection(
     searchText: String,
-    onSearchTextChange: (String) -> Unit
+    onSearchTextChange: (String) -> Unit,
+    modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
+        modifier = modifier
             .height(58.dp)
             .clip(RoundedCornerShape(50.dp))
             .background(AppColors.SearchBackground)
             .padding(start = 18.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(
-            text = "⌕",
-            fontSize = 34.sp,
-            color = AppColors.TextSecondary
+        Image(
+            painter = painterResource(id = R.drawable.search_icon),
+            contentDescription = "Search",
+            modifier = Modifier.size(24.dp),
+            contentScale = ContentScale.Fit
         )
 
         Spacer(modifier = Modifier.width(10.dp))
@@ -716,22 +739,38 @@ fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
         Row(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 34.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
+                .padding(horizontal = 12.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             FloatingNavItem(
                 iconRes = R.drawable.home_icon,
+                selected = false,
+                contentDescription = "Home",
+                modifier = Modifier.weight(1f),
                 onClick = {}
             )
 
             FloatingNavItem(
                 iconRes = R.drawable.paw_icon,
+                selected = true,
+                contentDescription = "Marketplace",
+                modifier = Modifier.weight(1f),
+                onClick = {}
+            )
+
+            FloatingNavItem(
+                iconRes = R.drawable.chat_icon,
+                selected = false,
+                contentDescription = "Chat",
+                modifier = Modifier.weight(1f),
                 onClick = {}
             )
 
             FloatingNavItem(
                 iconRes = R.drawable.profile_icon,
+                selected = false,
+                contentDescription = "Profile",
+                modifier = Modifier.weight(1f),
                 onClick = {}
             )
         }
@@ -741,21 +780,38 @@ fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
 @Composable
 fun FloatingNavItem(
     iconRes: Int,
+    selected: Boolean,
+    contentDescription: String,
+    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Box(
-        modifier = Modifier
-            .size(58.dp)
-            .clip(CircleShape)
-            .clickable { onClick() },
+        modifier = modifier
+            .fillMaxHeight(),
         contentAlignment = Alignment.Center
     ) {
-        Image(
-            painter = painterResource(id = iconRes),
-            contentDescription = null,
-            modifier = Modifier.size(38.dp),
-            contentScale = ContentScale.Fit
-        )
+        Box(
+            modifier = Modifier
+                .width(if (selected) 96.dp else 58.dp)
+                .height(52.dp)
+                .clip(RoundedCornerShape(26.dp))
+                .background(
+                    color = if (selected) {
+                        AppColors.NavSelected
+                    } else {
+                        Color.Transparent
+                    }
+                )
+                .clickable { onClick() },
+            contentAlignment = Alignment.Center
+        ) {
+            Image(
+                painter = painterResource(id = iconRes),
+                contentDescription = contentDescription,
+                modifier = Modifier.size(36.dp),
+                contentScale = ContentScale.Fit
+            )
+        }
     }
 }
 

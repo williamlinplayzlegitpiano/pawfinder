@@ -90,7 +90,7 @@ Move into the project directory:
 ```bash
 cd PetRescue
 ```
-
+    
 ### Open the Project
 
 1. Open Android Studio.
