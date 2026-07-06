@@ -39,6 +39,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 
 import com.williamlin.petrescue.ui.theme.AppColors
+import com.williamlin.petrescue.data.samplePets
 
 @Composable
 fun MarketplaceScreen() {
