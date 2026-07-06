@@ -30,6 +30,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.Alignment
@@ -147,13 +148,17 @@ fun MarketplacePetCard(pet: Pet) {
                 Text(
                     text = pet.name,
                     style = MaterialTheme.typography.headlineMedium,
-                    color = AppColors.TextPrimary
+                    color = AppColors.TextPrimary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Text(
                     text = pet.breed,
                     style = MaterialTheme.typography.bodySmall,
-                    color = AppColors.TextSecondary
+                    color = AppColors.TextSecondary,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
                 )
 
                 Spacer(modifier = Modifier.height(6.dp))
@@ -180,9 +185,11 @@ fun MarketplacePetCard(pet: Pet) {
                     Spacer(modifier = Modifier.width(6.dp))
 
                     Text(
-                        text = pet.distance,
+                        text = "${pet.shelter} • ${pet.distance}",
                         style = MaterialTheme.typography.bodySmall,
-                        color = AppColors.TextPrimary
+                        color = AppColors.TextPrimary,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
                     )
                 }
 
