@@ -113,10 +113,10 @@ val samplePets = listOf(
         imageRes = R.drawable.fox_joshna
     ),
     Pet(
-        name = "Luna",
-        breed = "Chihuahua",
-        shelter = "BC SPCA",
-        distance = "10 km",
+        name = "Sir Theodore Montgomery the Third",
+        breed = "Australian Shepherd and Border Collie Mix",
+        shelter = "BCPD",
+        distance = "8.8 km",
         urgency = "Critical",
         daysLeft = 3,
         description = "Small, affectionate, and comfortable around people.",
