@@ -82,7 +82,6 @@ fun MarketplaceScreen() {
 
         matchesSearch && matchesSpecies
     }
-
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -201,7 +200,7 @@ fun MarketplaceFilterPanel(
 
             FilterSection(
                 title = "Location",
-                options = listOf("Any", "10 mi", "25 mi", "50 mi", "100 mi"),
+                options = listOf("10 mi", "25 mi", "50 mi", "100 mi", "Any"),
                 selectedOption = selectedLocation,
                 onOptionSelected = onLocationSelected
             )
@@ -222,7 +221,7 @@ fun MarketplaceFilterPanel(
 
             FilterSection(
                 title = "Time Listed",
-                options = listOf("Any Time", "New Today", "This Week", "This Month"),
+                options = listOf("New Today", "This Week", "This Month", "Any Time"),
                 selectedOption = selectedTimeListed,
                 onOptionSelected = onTimeListedSelected
             )
@@ -404,7 +403,7 @@ fun MarketplacePetCard(pet: Pet) {
                 ) {
                     Image(
                         painter = painterResource(id = R.drawable.location_icon),
-                        contentDescription = "Distance",
+                        contentDescription = "Location",
                         modifier = Modifier.size(18.dp),
                         contentScale = ContentScale.Fit
                     )
