@@ -88,7 +88,6 @@ fun MarketplaceScreen() {
             .background(AppColors.Background)
             .padding(top = 52.dp)
     ) {
-
         Spacer(modifier = Modifier.height(18.dp))
 
         Box(
