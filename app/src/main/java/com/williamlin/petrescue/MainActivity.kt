@@ -101,13 +101,8 @@ fun PetRescueApp() {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-//        DashboardScreen(
-//            modifier = Modifier
-//                .fillMaxSize()
-//                .padding(bottom = 88.dp)
-//        )
 
-        MarketplaceScreen()
+        ProfileScreen()
 
         FloatingBottomNavigationBar(
             modifier = Modifier
