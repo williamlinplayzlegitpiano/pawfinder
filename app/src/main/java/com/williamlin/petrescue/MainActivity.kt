@@ -82,6 +82,13 @@ data class Pet(
     val imageRes: Int
 )
 
+enum class AppScreen {
+    Home,
+    Marketplace,
+    Chat,
+    Profile
+}
+
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,13 +105,44 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun PetRescueApp() {
+    var selectedScreen by remember { mutableStateOf(AppScreen.Home) }
+
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
+        when (selectedScreen) {
+            AppScreen.Home -> {
+                DashboardScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 88.dp)
+                )
+            }
 
-        ProfileScreen()
+            AppScreen.Marketplace -> {
+                MarketplaceScreen()
+            }
+
+            AppScreen.Chat -> {
+                DashboardScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 88.dp)
+                )
+            }
+
+            AppScreen.Profile -> {
+                DashboardScreen(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 88.dp)
+                )
+            }
+        }
 
         FloatingBottomNavigationBar(
+            selectedScreen = selectedScreen,
+            onScreenSelected = { selectedScreen = it },
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 38.dp, vertical = 26.dp)
@@ -209,7 +247,8 @@ fun HeaderSection() {
 fun SearchSection(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFilterClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -256,6 +295,7 @@ fun SearchSection(
                 .height(46.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .background(AppColors.FilterButtonBackground)
+                .clickable { onFilterClick() }
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
@@ -666,7 +706,11 @@ fun RecentPostsSection() {
 }
 
 @Composable
-fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
+fun FloatingBottomNavigationBar(
+    selectedScreen: AppScreen,
+    onScreenSelected: (AppScreen) -> Unit,
+    modifier: Modifier = Modifier
+) {
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -687,34 +731,34 @@ fun FloatingBottomNavigationBar(modifier: Modifier = Modifier) {
         ) {
             FloatingNavItem(
                 iconRes = R.drawable.home_icon,
-                selected = false,
+                selected = selectedScreen == AppScreen.Home,
                 contentDescription = "Home",
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = { onScreenSelected(AppScreen.Home) }
             )
 
             FloatingNavItem(
                 iconRes = R.drawable.paw_icon,
-                selected = true,
+                selected = selectedScreen == AppScreen.Marketplace,
                 contentDescription = "Marketplace",
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = { onScreenSelected(AppScreen.Marketplace) }
             )
 
             FloatingNavItem(
                 iconRes = R.drawable.chat_icon,
-                selected = false,
+                selected = selectedScreen == AppScreen.Chat,
                 contentDescription = "Chat",
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = { onScreenSelected(AppScreen.Chat) }
             )
 
             FloatingNavItem(
                 iconRes = R.drawable.profile_icon,
-                selected = false,
+                selected = selectedScreen == AppScreen.Profile,
                 contentDescription = "Profile",
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = { onScreenSelected(AppScreen.Profile) }
             )
         }
     }
