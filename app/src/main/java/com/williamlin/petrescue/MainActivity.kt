@@ -214,7 +214,8 @@ fun HeaderSection() {
 fun SearchSection(
     searchText: String,
     onSearchTextChange: (String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onFilterClick: () -> Unit = {}
 ) {
     Row(
         modifier = modifier
@@ -261,6 +262,7 @@ fun SearchSection(
                 .height(46.dp)
                 .clip(RoundedCornerShape(22.dp))
                 .background(AppColors.FilterButtonBackground)
+                .clickable { onFilterClick() }
                 .padding(horizontal = 16.dp),
             contentAlignment = Alignment.Center
         ) {
