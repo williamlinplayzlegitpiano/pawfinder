@@ -44,7 +44,7 @@ fun ProfileScreen() {
     ) {
         ProfileHeaderSection()
 
-        Spacer(modifier = Modifier.height(18.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         ProfileStatsSection()
 
@@ -63,13 +63,12 @@ fun ProfileHeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(310.dp),
-        contentAlignment = Alignment.TopCenter
+            .height(330.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(230.dp)
+                .height(225.dp)
                 .clip(
                     RoundedCornerShape(
                         bottomStart = 180.dp,
@@ -81,25 +80,32 @@ fun ProfileHeaderSection() {
 
         Box(
             modifier = Modifier
-                .size(132.dp)
+                .size(136.dp)
                 .align(Alignment.BottomCenter)
-                .offset(y = (-18).dp)
+                .offset(y = (-34).dp)
                 .clip(CircleShape)
                 .background(AppColors.CardBackground)
         )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 46.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "USER",
+                style = MaterialTheme.typography.headlineMedium,
+                color = AppColors.TextPrimary
+            )
+
+            Text(
+                text = "@username",
+                style = MaterialTheme.typography.bodyMedium,
+                color = AppColors.TextSecondary
+            )
+        }
     }
-
-    Text(
-        text = "USER",
-        style = MaterialTheme.typography.headlineMedium,
-        color = AppColors.TextPrimary
-    )
-
-    Text(
-        text = "USERNAME",
-        style = MaterialTheme.typography.bodyMedium,
-        color = AppColors.TextSecondary
-    )
 }
 
 @Composable
@@ -107,7 +113,7 @@ fun ProfileStatsSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 86.dp),
+            .padding(horizontal = 88.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -136,6 +142,8 @@ fun ProfileStatItem(
             style = MaterialTheme.typography.headlineMedium,
             color = AppColors.TextPrimary
         )
+
+        Spacer(modifier = Modifier.height(2.dp))
 
         Text(
             text = label,
