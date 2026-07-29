@@ -16,11 +16,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.Canvas
 
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 
 import androidx.compose.runtime.Composable
 
@@ -29,6 +34,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.graphics.Path
 
 import com.williamlin.petrescue.ui.theme.AppColors
 
@@ -39,7 +45,7 @@ fun ProfileScreen() {
             .fillMaxSize()
             .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
-            .padding(bottom = 120.dp),
+            .padding(bottom = 150.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         ProfileHeaderSection()
@@ -50,7 +56,11 @@ fun ProfileScreen() {
 
         Spacer(modifier = Modifier.height(18.dp))
 
-        ProfileDivider()
+        ProfileDivider(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 42.dp)
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
@@ -65,32 +75,69 @@ fun ProfileHeaderSection() {
             .fillMaxWidth()
             .height(330.dp)
     ) {
-        Box(
+        Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(225.dp)
-                .clip(
-                    RoundedCornerShape(
-                        bottomStart = 180.dp,
-                        bottomEnd = 180.dp
-                    )
-                )
-                .background(AppColors.TextSecondary)
-        )
+                .height(245.dp)
+                .align(Alignment.TopCenter)
+        ) {
+            val curveSideY = 205.dp.toPx()
+            val curveBottomY = 245.dp.toPx()
 
-        Box(
+            val path = Path().apply {
+                moveTo(0f, 0f)
+                lineTo(size.width, 0f)
+                lineTo(size.width, curveSideY)
+                quadraticBezierTo(
+                    size.width / 2f,
+                    curveBottomY,
+                    0f,
+                    curveSideY
+                )
+                close()
+            }
+
+            drawPath(
+                path = path,
+                color = AppColors.TextSecondary
+            )
+        }
+
+        IconButton(
+            onClick = {
+                // Settings action will be implemented in a future story
+            },
+            modifier = Modifier
+                .align(Alignment.TopEnd)
+                .padding(top = 38.dp, end = 28.dp)
+                .size(44.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.Settings,
+                contentDescription = "Settings",
+                tint = AppColors.CardBackground,
+                modifier = Modifier.size(30.dp)
+            )
+        }
+
+        Card(
             modifier = Modifier
                 .size(136.dp)
-                .align(Alignment.BottomCenter)
-                .offset(y = (-34).dp)
-                .clip(CircleShape)
-                .background(AppColors.CardBackground)
-        )
+                .align(Alignment.TopCenter)
+                .offset(y = 122.dp),
+            shape = CircleShape,
+            colors = CardDefaults.cardColors(
+                containerColor = AppColors.CardBackground
+            ),
+            elevation = CardDefaults.cardElevation(
+                defaultElevation = 8.dp
+            )
+        ) {}
 
         Column(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .offset(y = 46.dp),
+                .padding(bottom = 6.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -100,7 +147,7 @@ fun ProfileHeaderSection() {
             )
 
             Text(
-                text = "@username",
+                text = "USERNAME",
                 style = MaterialTheme.typography.bodyMedium,
                 color = AppColors.TextSecondary
             )
@@ -158,11 +205,11 @@ fun ProfileContentSection() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 48.dp)
+            .padding(horizontal = 42.dp)
     ) {
         ProfilePlaceholderSection(
             title = "profile statement",
-            height = 82.dp
+            height = 74.dp
         )
 
         Spacer(modifier = Modifier.height(18.dp))
@@ -171,13 +218,15 @@ fun ProfileContentSection() {
 
         Spacer(modifier = Modifier.height(18.dp))
 
-        ProfileDivider()
+        ProfileDivider(
+            modifier = Modifier.fillMaxWidth()
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
         ProfilePlaceholderSection(
             title = "Forum Posts",
-            height = 178.dp
+            height = 220.dp
         )
 
         Spacer(modifier = Modifier.height(14.dp))
@@ -220,7 +269,7 @@ fun ProfileBadgesSection() {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .height(104.dp),
+            .height(96.dp),
         shape = RoundedCornerShape(0.dp),
         colors = CardDefaults.cardColors(
             containerColor = AppColors.TextSecondary
@@ -253,17 +302,17 @@ fun ProfileBadgesSection() {
 fun BadgePlaceholder() {
     Box(
         modifier = Modifier
-            .size(width = 48.dp, height = 58.dp)
+            .size(width = 44.dp, height = 58.dp)
             .background(AppColors.PlaceholderGray)
     )
 }
 
 @Composable
-fun ProfileDivider() {
+fun ProfileDivider(
+    modifier: Modifier = Modifier
+) {
     Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(horizontal = 48.dp)
+        modifier = modifier
             .height(1.dp)
             .background(AppColors.TextSecondary)
     )
