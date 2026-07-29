@@ -107,37 +107,23 @@ class MainActivity : ComponentActivity() {
 fun PetRescueApp() {
     var selectedScreen by remember { mutableStateOf(AppScreen.Home) }
 
-    Box(
-        modifier = Modifier.fillMaxSize()
-    ) {
+    Box(modifier = Modifier.fillMaxSize()) {
         when (selectedScreen) {
-            AppScreen.Home -> {
-                DashboardScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 88.dp)
-                )
-            }
+            AppScreen.Home -> DashboardScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 88.dp)
+            )
 
-            AppScreen.Marketplace -> {
-                MarketplaceScreen()
-            }
+            AppScreen.Marketplace -> MarketplaceScreen()
 
-            AppScreen.Chat -> {
-                DashboardScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 88.dp)
-                )
-            }
+            AppScreen.Chat -> DashboardScreen(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(bottom = 88.dp)
+            )
 
-            AppScreen.Profile -> {
-                DashboardScreen(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(bottom = 88.dp)
-                )
-            }
+            AppScreen.Profile -> ProfileScreen()
         }
 
         FloatingBottomNavigationBar(
@@ -711,56 +697,43 @@ fun FloatingBottomNavigationBar(
     onScreenSelected: (AppScreen) -> Unit,
     modifier: Modifier = Modifier
 ) {
-    Card(
+    Row(
         modifier = modifier
             .fillMaxWidth()
-            .height(72.dp),
-        shape = RoundedCornerShape(30.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = AppColors.NavBackground
-        ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 12.dp
-        )
+            .height(72.dp)
+            .clip(RoundedCornerShape(50.dp))
+            .background(AppColors.NavBackground)
+            .padding(horizontal = 14.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(horizontal = 12.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            FloatingNavItem(
-                iconRes = R.drawable.home_icon,
-                selected = selectedScreen == AppScreen.Home,
-                contentDescription = "Home",
-                modifier = Modifier.weight(1f),
-                onClick = { onScreenSelected(AppScreen.Home) }
-            )
+        FloatingNavItem(
+            iconRes = R.drawable.home_icon,
+            selected = selectedScreen == AppScreen.Home,
+            contentDescription = "Home",
+            onClick = { onScreenSelected(AppScreen.Home) }
+        )
 
-            FloatingNavItem(
-                iconRes = R.drawable.paw_icon,
-                selected = selectedScreen == AppScreen.Marketplace,
-                contentDescription = "Marketplace",
-                modifier = Modifier.weight(1f),
-                onClick = { onScreenSelected(AppScreen.Marketplace) }
-            )
+        FloatingNavItem(
+            iconRes = R.drawable.paw_icon,
+            selected = selectedScreen == AppScreen.Marketplace,
+            contentDescription = "Marketplace",
+            onClick = { onScreenSelected(AppScreen.Marketplace) }
+        )
 
-            FloatingNavItem(
-                iconRes = R.drawable.chat_icon,
-                selected = selectedScreen == AppScreen.Chat,
-                contentDescription = "Chat",
-                modifier = Modifier.weight(1f),
-                onClick = { onScreenSelected(AppScreen.Chat) }
-            )
+        FloatingNavItem(
+            iconRes = R.drawable.chat_icon,
+            selected = selectedScreen == AppScreen.Chat,
+            contentDescription = "Chat",
+            onClick = { onScreenSelected(AppScreen.Chat) }
+        )
 
-            FloatingNavItem(
-                iconRes = R.drawable.profile_icon,
-                selected = selectedScreen == AppScreen.Profile,
-                contentDescription = "Profile",
-                modifier = Modifier.weight(1f),
-                onClick = { onScreenSelected(AppScreen.Profile) }
-            )
-        }
+        FloatingNavItem(
+            iconRes = R.drawable.profile_icon,
+            selected = selectedScreen == AppScreen.Profile,
+            contentDescription = "Profile",
+            onClick = { onScreenSelected(AppScreen.Profile) }
+        )
     }
 }
 
@@ -769,39 +742,34 @@ fun FloatingNavItem(
     iconRes: Int,
     selected: Boolean,
     contentDescription: String,
-    modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
     Box(
-        modifier = modifier
-            .fillMaxHeight(),
+        modifier = Modifier
+            .width(68.dp)
+            .height(52.dp),
         contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .width(if (selected) 96.dp else 58.dp)
-                .height(52.dp)
-                .clip(RoundedCornerShape(26.dp))
+                .fillMaxSize()
+                .clip(RoundedCornerShape(50.dp))
                 .background(
-                    color = if (selected) {
-                        AppColors.NavSelected
-                    } else {
-                        Color.Transparent
-                    }
+                    if (selected) AppColors.NavSelected
+                    else AppColors.NavBackground
                 )
                 .clickable { onClick() },
             contentAlignment = Alignment.Center
         ) {
-            Image(
+            Icon(
                 painter = painterResource(id = iconRes),
                 contentDescription = contentDescription,
-                modifier = Modifier.size(36.dp),
-                contentScale = ContentScale.Fit
+                tint = AppColors.CardBackground,
+                modifier = Modifier.size(34.dp)
             )
         }
     }
 }
-
 @Composable
 fun LoadingScreen() {
     Box(
