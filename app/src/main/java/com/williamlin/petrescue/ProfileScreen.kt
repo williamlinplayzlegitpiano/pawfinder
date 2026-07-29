@@ -70,26 +70,17 @@ fun ProfileHeaderSection() {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(305.dp)
+            .height(330.dp)
     ) {
         Canvas(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(285.dp)
-                .align(Alignment.TopCenter)
-        ) {
-            val curveSideY = 215.dp.toPx()
-            val curveBottomY = 280.dp.toPx()
-
-            val path = Path().apply {
-                moveTo(0f, 0f)
-                lineTo(size.width, 0f)
-                lineTo(size.width, curveSideY)
-                quadraticBezierTo(
-                    size.width / 2f,
-                    curveBottomY,
-                    0f,
-                    curveSideY
+                .height(225.dp)
+                .clip(
+                    RoundedCornerShape(
+                        bottomStart = 180.dp,
+                        bottomEnd = 180.dp
+                    )
                 )
                 close()
             }
@@ -102,29 +93,32 @@ fun ProfileHeaderSection() {
 
         Card(
             modifier = Modifier
-                .size(138.dp)
-                .align(Alignment.BottomCenter),
-            shape = CircleShape,
-            colors = CardDefaults.cardColors(
-                containerColor = AppColors.CardBackground
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 8.dp
+                .size(136.dp)
+                .align(Alignment.BottomCenter)
+                .offset(y = (-34).dp)
+                .clip(CircleShape)
+                .background(AppColors.CardBackground)
+        )
+
+        Column(
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .offset(y = 46.dp),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = "USER",
+                style = MaterialTheme.typography.headlineMedium,
+                color = AppColors.TextPrimary
             )
-        ) {}
+
+            Text(
+                text = "@username",
+                style = MaterialTheme.typography.bodyMedium,
+                color = AppColors.TextSecondary
+            )
+        }
     }
-
-    Text(
-        text = "USER",
-        style = MaterialTheme.typography.headlineMedium,
-        color = AppColors.TextPrimary
-    )
-
-    Text(
-        text = "USERNAME",
-        style = MaterialTheme.typography.bodyMedium,
-        color = AppColors.TextSecondary
-    )
 }
 
 @Composable
@@ -132,7 +126,7 @@ fun ProfileStatsSection() {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 86.dp),
+            .padding(horizontal = 88.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
